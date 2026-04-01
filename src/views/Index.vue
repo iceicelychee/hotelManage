@@ -11,7 +11,52 @@ import {
   Location,
   Setting,
 } from '@element-plus/icons-vue'
+import { useUserStore } from '../stores/user'
+import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+import { getUserInfoApi } from '../api/auth'  
+import { ElMessageBox, ElMessage } from 'element-plus'
 
+
+const userStore = useUserStore()
+const router = useRouter()
+
+
+onMounted(() => {
+  if (!userStore.isLoggedIn) {
+    router.push('/login')
+  }
+  
+})
+
+const logout = () => {
+   ElMessageBox.confirm(
+    '确定要退出登录吗？',
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(() => {
+      ElMessage({
+        type: 'success',
+        message: '退出登录成功',
+      })
+      userStore.clearUser()
+      router.push('/login')
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '取消退出登录',
+      })
+    })
+
+
+  
+}
 </script>
 <template>
   <div class="home">
@@ -31,8 +76,8 @@ import {
             <el-icon><Avatar /></el-icon>
             <span>账号管理</span>
           </template>
-          <el-menu-item index="/role">角色管理</el-menu-item>
-          <el-menu-item index="/user">用户管理</el-menu-item>
+          <el-menu-item index="role">角色管理</el-menu-item>
+          <el-menu-item index="user">用户管理</el-menu-item>
         </el-sub-menu>
       
         <el-sub-menu index="2">
@@ -40,8 +85,8 @@ import {
             <el-icon><OfficeBuilding /></el-icon>
             <span>客房管理</span>
           </template>
-          <el-menu-item index="/roomtype">房型管理</el-menu-item>
-          <el-menu-item index="/room">房间管理</el-menu-item>
+          <el-menu-item index="roomtype">房型管理</el-menu-item>
+          <el-menu-item index="room">房间管理</el-menu-item>
         </el-sub-menu>
 
          <el-sub-menu index="3">
@@ -49,16 +94,16 @@ import {
             <el-icon><PhoneFilled /></el-icon>
             <span>客户管理</span>
           </template>
-          <el-menu-item index="/livein">入住管理</el-menu-item>
-          <el-menu-item index="/order">退房管理</el-menu-item>
+          <el-menu-item index="livein">入住管理</el-menu-item>
+          <el-menu-item index="order">退房管理</el-menu-item>
         </el-sub-menu>
          <el-sub-menu index="4">
           <template #title>
             <el-icon><Setting /></el-icon>
             <span>系统管理</span>
           </template>
-          <el-menu-item index="/menu">菜单管理</el-menu-item>
-          <el-menu-item index="/dictionary">字典管理</el-menu-item>
+          <el-menu-item index="menu">菜单管理</el-menu-item>
+          <el-menu-item index="dictionary">字典管理</el-menu-item>
         </el-sub-menu>
       </el-menu>
    
@@ -75,14 +120,14 @@ import {
           text-color="#333"
           mode="horizontal"
         >
-        <el-menu-item index="/home"><el-icon><House /></el-icon>首页</el-menu-item>
-        <el-menu-item index="/mail"><el-icon><Message /></el-icon>邮件</el-menu-item>
-        <el-menu-item index="/message"><el-icon><ChatLineSquare /></el-icon>消息</el-menu-item>
-        <el-sub-menu index="/user">
-            <template #title><el-icon><UserFilled /></el-icon>个人中心</template>
-            <el-menu-item index="/mine">个人中心</el-menu-item>
-            <el-menu-item index="/setpwd">修改密码</el-menu-item>
-            <el-menu-item >退出登录</el-menu-item>
+        <el-menu-item index="/index/home"><el-icon><House /></el-icon>首页</el-menu-item>
+        <el-menu-item index="/index/mail"><el-icon><Message /></el-icon>邮件</el-menu-item>
+        <el-menu-item index="/index/message"><el-icon><ChatLineSquare /></el-icon>消息</el-menu-item>
+        <el-sub-menu>
+            <template #title><el-icon><UserFilled /></el-icon>管理员</template>
+            <el-menu-item index="/index/mine">个人中心</el-menu-item>
+            <el-menu-item index="/index/setpwd">修改密码</el-menu-item>
+            <el-menu-item @click="logout">退出登录</el-menu-item>
           </el-sub-menu>
           </el-menu>
         </nav>
@@ -125,10 +170,10 @@ import {
         display: flex;
         justify-content: flex-end;
         align-items: center;
-         #content{
-          padding: 5px;
-          flex: 1;
-         }
+       }
+       #content{
+        //padding: 5px;
+        
        }
     }
 }

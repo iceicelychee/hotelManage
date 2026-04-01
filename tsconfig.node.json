@@ -8,6 +8,7 @@
     "playwright.config.*",
     "eslint.config.*"
   ],
+  "lib": ["esnext", "dom"],
   "compilerOptions": {
     // Most tools use transpilation instead of Node.js's native type-stripping.
     // Bundler mode provides a smoother developer experience.

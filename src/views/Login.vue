@@ -3,10 +3,12 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage,ElNotification } from 'element-plus'
 import type { FormInstance, FormRules, FormItemRule } from 'element-plus'
-import { loginApi, registerApi } from '../api/auth'
+import { loginApi, registerApi, getUserInfoApi } from '../api/auth'
+import { useUserStore } from '../stores/user'
 
 
 const router = useRouter()
+const userStore = useUserStore()
 
 // 表单组件实例引用（用于调用 validate 等方法）
 const loginFormRef = ref<FormInstance>()
@@ -56,14 +58,13 @@ const login = async () => {
     // 保存 token
     localStorage.setItem('token', res.token)
 
+    // 保存用户信息到 Pinia
+    userStore.setUser(res.user)
+
     ElMessage.success('登录成功')
-    // ElNotification({
-    //   title: '登录成功',
-    //   message: '登录成功22'
-    // })
 
     // 跳转到首页
-    router.push('/index')
+    router.push('/index/home')
   } catch (error: any) {
     // 显示错误信息
     ElMessage.error(error.message || '登录失败')

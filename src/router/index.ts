@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import 'nprogress/nprogress.css'  
+import nprogress from 'nprogress'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,69 +24,70 @@ const router = createRouter({
       path: '/index',
       meta: { title: '首页' },
       component: () => import('../views/Index.vue'),
+      redirect: '/index/home',
       children: [
         {
-          path: '/home',
+          path: 'home',
           meta: { title: '首页' },
           component: () => import('../views/Home.vue')
         },
         {
-          path: '/mail',
+          path: 'mail',
           meta: { title: '邮件' },
           component: () => import('../views/Mail.vue')
         },
         {
-          path: '/message',
+          path: 'message',
           meta: { title: '消息' },
           component: () => import('../views/Message.vue')
         },
         {
-          path: '/Mine',
+          path: 'mine',
           meta: { title: '个人中心' },
           component: () => import('../views/user/Mine.vue')
         },
         {
-          path: '/SetPwd',
+          path: 'SetPwd',
           meta: { title: '修改密码' },
           component: () => import('../views/user/SetPwd.vue')
         },
         {
-          path: '/Role',
+          path: 'Role',
           meta: { title: '角色管理' },
           component: () => import('../views/user/Role.vue')
         },
         {
-          path: '/User',
+          path: 'User',
           meta: { title: '用户管理' },
           component: () => import('../views/user/User.vue')
         },
         {
-          path: '/RoomType',
+          path: 'RoomType',
           meta: { title: '房型管理' },
           component: () => import('../views/room/RoomType.vue')
         },
         {
-          path: '/Room',
+          path: 'Room',
           meta: { title: '房间管理' },
           component: () => import('../views/room/Room.vue')
         },
         {
-          path: '/LiveIn',
+          path: 'LiveIn',
           meta: { title: '入住管理' },
           component: () => import('../views/custom/LiveIn.vue')
         },
         {
-          path: '/Order',
+          path: 'Order',
           meta: { title: '订单管理' },
           component: () => import('../views/custom/Order.vue')
         },
         {
-          path: '/Menu',
+          path: 'Menu',
           meta: { title: '菜单管理' },
           component: () => import('../views/system/Menu.vue')
         },
         {
-          path: '/Dictionary',
+          path: 'Dictionary',
           meta: { title: '字典管理' },
           component: () => import('../views/system/Dictionary.vue')
         }
@@ -92,5 +95,18 @@ const router = createRouter({
     }
   ],
 })
+
+router.beforeEach((to, from, next) => {
+  nprogress.start()
+  next()
+})
+
+router.afterEach((to) => {
+  if(to.meta && to.meta.title){
+     document.title = to.meta.title as string
+  }
+  nprogress.done()
+})
+
 
 export default router
